@@ -6,17 +6,10 @@ from datetime import datetime
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-
-
-class VetVisit(models.Model):
-    pass
-
-
-class MedicalEvent(models.Model):
-    pass
 
 
 class Pet(models.Model):
@@ -65,13 +58,6 @@ class Pet(models.Model):
         default=SexChoices.UNKNOWN,
     )
 
-    vet_visits = models.ForeignKey(
-        VetVisit, on_delete=models.CASCADE, null=True, blank=True
-    )
-    medical_event = models.ForeignKey(
-        MedicalEvent, on_delete=models.CASCADE, null=True, blank=True
-    )
-
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property
@@ -85,3 +71,16 @@ class Pet(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} - {self.species} {self.breed}`"
+
+
+class PetEvent(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
+    date = models.DateTimeField("Date")
+
+
+class VetAppointment(PetEvent):
+    pass
+
+
+class HealthEvent(PetEvent):
+    pass

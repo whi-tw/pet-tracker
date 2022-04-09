@@ -1,3 +1,4 @@
+from typing import Union
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import (
@@ -11,7 +12,7 @@ from django.urls import reverse
 import sweetify
 
 
-from .models import Pet
+from .models import Pet, PetEvent, VetAppointment, HealthEvent
 from .forms import PetUpdateForm
 
 
@@ -26,11 +27,24 @@ def template_context(segment: str, request: HttpRequest, **kwargs):
 @login_required(login_url="/login/")
 def pet_overview(request: HttpRequest, pet_id: int) -> HttpResponse:
     this_pet: Pet = get_object_or_404(Pet, id=pet_id)
+    vet_appointments = VetAppointment.objects.filter(pet=this_pet).order_by("date")
+    health_events = HealthEvent.objects.filter(pet=this_pet).order_by("date")
+    timeline_entries = {}
+    for event_type in (vet_appointments, health_events):
+        event: PetEvent
+        for event in event_type:
+            event_date = event.date.date()
+            if event_date not in timeline_entries.keys():
+                timeline_entries[event_date] = []
+            timeline_entries[event_date].append(event)
     form = PetUpdateForm(request.POST or None, instance=this_pet)
     context = template_context(
         "/".join(request.path.split("/")[-2:]),
         request,
         pet=this_pet,
+        vet_appointments=vet_appointments,
+        health_events=health_events,
+        timeline_entries=timeline_entries,
         form=form,
     )
     if form.is_valid():

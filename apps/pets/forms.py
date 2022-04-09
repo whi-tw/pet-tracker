@@ -1,7 +1,8 @@
 from django import forms
 from django.urls import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
+from crispy_forms.bootstrap import FormActions, Accordion, AccordionGroup
 
 from .models import Pet
 
@@ -16,20 +17,21 @@ class PetUpdateForm(forms.ModelForm):
             "pet_overview", kwargs={"pet_id": self.instance.id}
         )
         self.helper.layout = Layout(
-            Fieldset("Basic Information", "name", "date_of_birth"),
-            Fieldset(
-                "Picture",
-                "picture",
+            Accordion(
+                AccordionGroup(
+                    "Basic Information",
+                    "name",
+                    "date_of_birth",
+                    "picture",
+                ),
+                AccordionGroup(
+                    "Shouldn't really need to be changed!", "species", "breed", "sex"
+                ),
             ),
-            ButtonHolder(Submit("submit", "Submit", css_class="btn btn-danger")),
+            FormActions(Submit("submit", "Submit", css_class="btn btn-danger")),
         )
-
-    date_of_birth = forms.DateField(
-        widget=forms.TextInput(attrs={"type": "date"}), required=False
-    )
 
     class Meta:
         model = Pet
-        fields = ["name", "date_of_birth", "picture"]
-
-    # class PetUpdateForm(forms.Form):
+        fields = ["name", "date_of_birth", "picture", "species", "breed", "sex"]
+        widgets = {"date_of_birth": forms.DateInput(attrs={"type": "date"})}

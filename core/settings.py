@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "imagekit",
+    "crispy_forms",
+    "sweetify",
     "apps.pets",
 ]
 
@@ -72,6 +75,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
+MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -130,3 +134,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = "media/"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+SWEETIFY_SWEETALERT_LIBRARY = "sweetalert2"

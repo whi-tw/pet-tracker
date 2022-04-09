@@ -1,10 +1,14 @@
 import os
+import random
 from uuid import uuid4
 
 from datetime import datetime
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 
 class VetVisit(models.Model):
@@ -15,7 +19,34 @@ class MedicalEvent(models.Model):
     pass
 
 
-class Animal(models.Model):
+class Pet(models.Model):
+    name = models.CharField(max_length=200)
+
+    def pet_photo_file_name(self, filename):
+        ext = filename.split(".")[-1]
+        filename = f"{str(uuid4())}.{ext}"
+        return os.path.join("pet_photos", filename)
+
+    def default_pet_photo():
+        img_number = random.randint(0, 99)
+        return os.path.join("default_pet_photos", f"{img_number}.jpg")
+
+    picture = models.ImageField(
+        blank=True, upload_to=pet_photo_file_name, default=default_pet_photo()
+    )
+    picture_profile = ImageSpecField(
+        source="picture",
+        processors=[ResizeToFill(200, 200)],
+        format="JPEG",
+        options={"quality": 60},
+    )
+    picture_icon = ImageSpecField(
+        source="picture",
+        processors=[ResizeToFill(100, 100)],
+        format="JPEG",
+        options={"quality": 60},
+    )
+
     class SpeciesChoices(models.IntegerChoices):
         CAT = 1, _("Cat")
         DOG = 2, _("Dog")
@@ -34,24 +65,6 @@ class Animal(models.Model):
         default=SexChoices.UNKNOWN,
     )
 
-    def __str__(self) -> str:
-        return f"{self.get_species_display()} ({self.breed})"
-
-
-class Pet(models.Model):
-    name = models.CharField(max_length=200)
-
-    animal = models.OneToOneField(
-        Animal, verbose_name=_("Animal Details"), on_delete=models.CASCADE
-    )
-
-    def pet_photo_file_name(self, filename):
-        ext = filename.split(".")[-1]
-        filename = f"{str(uuid4())}.{ext}"
-        return os.path.join("pet_photos", str(self.id), filename)
-
-    picture = models.ImageField(blank=True, upload_to=pet_photo_file_name)
-
     vet_visits = models.ForeignKey(
         VetVisit, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -59,13 +72,16 @@ class Pet(models.Model):
         MedicalEvent, on_delete=models.CASCADE, null=True, blank=True
     )
 
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
     @property
     def age(self) -> str:
         import arrow
 
-        dob: datetime = self.animal.date_of_birth
-        age = arrow.get(dob).humanize(only_distance=True, granularity=["year", "month"])
+        age = arrow.get(self.date_of_birth).humanize(
+            only_distance=True, granularity=["year", "month"]
+        )
         return age
 
     def __str__(self) -> str:
-        return f"{self.name} - {self.animal}"
+        return f"{self.name} - {self.species} {self.breed}`"

@@ -1,192 +1,211 @@
 {% extends "layouts/base.html" %}
+{% load static %}
 
-{% block title %} {{pet.name}} - Overview {% endblock %} 
+{% block title %} {{pet.name}} - Overview {% endblock %}
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
-
 {% endblock stylesheets %}
 
-{% block content %}  
+{% block content %}
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Pet Overview</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item"><a href="/pets">Pets</a></li>
-              <li class="breadcrumb-item active"><a href="/pets/{{pet.id}}">{{pet.name}}</a></li>
-            </ol>
-          </div>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Pet Overview</h1>
         </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/pets">Pets</a></li>
+            <li class="breadcrumb-item active"><a href="/pets/{{pet.id}}">{{pet.name}}</a></li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3">
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
 
-            <!-- Profile Image -->
-            <div class="card card-primary card-outline">
-              <div class="card-body box-profile">
-                <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle"
-                       src="{{pet.picture_profile.url}}"
-                       alt="Picture of {{pet.name}}">
-                </div>
-
-                <h3 class="profile-username text-center">
-                  {{ pet.name }}
-                </h3>
-
-                <ul class="list-group list-group-unbordered mb-3">
-                  <li class="list-group-item">
-                    <b>Age</b> <a class="float-right" data-toggle="tooltip" data-placement="top" title="{{pet.date_of_birth}}">{{pet.age}}</a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Sex</b> <a class="float-right">{{pet.get_sex_display}}</a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Breed</b> <a class="float-right">{{pet.breed}}</a>
-                  </li>
-                </ul>
-                <div class="btn-group d-flex" role="group">
-                  <a href="#" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" data-delay='{ "show": 500, "hide": 100 }' title="Add a vet appointment"><i class="fas fa-plus"></i> <b>Vet Appointment</b></a>
-                  <a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" data-delay='{ "show": 500, "hide": 100 }' title="Add a health event (weight, illness etc)"><i class="fas fa-plus"></i> <b>Health Info</b></a>
-                </div>
+          <!-- Profile Image -->
+          <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+              <div class="text-center">
+                <img class="profile-user-img img-fluid img-circle" src="{{pet.picture_profile.url}}"
+                  alt="Picture of {{pet.name}}">
               </div>
-              <!-- /.card-body -->
+
+              <h3 class="profile-username text-center">
+                {{ pet.name }}
+              </h3>
+
+              <ul class="list-group list-group-unbordered mb-3">
+                <li class="list-group-item">
+                  <b>Age</b> <a class="float-right" data-toggle="tooltip" data-placement="top"
+                    title="{{pet.date_of_birth}}">{{pet.age}}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Sex</b> <a class="float-right">{{pet.get_sex_display}}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Breed</b> <a class="float-right">{{pet.breed}}</a>
+                </li>
+              </ul>
+              <div class="btn-group d-flex" role="group">
+                <a href="#" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+                  data-delay='{ "show": 500, "hide": 100 }' title="Add a vet appointment"><i class="fas fa-plus"></i>
+                  <b>Vet Appointment</b></a>
+                <a href="#" class="btn btn-success" data-toggle="tooltip" data-placement="bottom"
+                  data-delay='{ "show": 500, "hide": 100 }' title="Add a health event (weight, illness etc)"><i
+                    class="fas fa-plus"></i> <b>Health Info</b></a>
+              </div>
             </div>
-            <!-- /.card -->
+            <!-- /.card-body -->
           </div>
-          <!-- /.col -->
-          <div class="col-md-9">
-            <div class="card">
-              <div class="card-header p-2">
-                <ul class="nav nav-pills">
-                  <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Timeline</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#update" data-toggle="tab">Update Info</a></li>
-                </ul>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content">
-                  <div class="active tab-pane" id="timeline">
-                    <!-- The timeline -->
-                    <div class="timeline timeline-inverse">
-                      {% for date, events in timeline_entries.items %}
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-danger">
-                          {{date}}
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      {% for event in events %}
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-envelope bg-primary"></i>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+          <div class="card">
+            <div class="card-header p-2">
+              <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Timeline</a></li>
+                <li class="nav-item"><a class="nav-link" href="#update" data-toggle="tab">Update Info</a></li>
+              </ul>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="active tab-pane" id="timeline">
+                  <!-- The timeline -->
+                  <div class="timeline timeline-inverse">
+                    {% for date, events in timeline_entries.items %}
+                    <!-- timeline time label -->
+                    <div class="time-label">
+                      <span class="bg-info">
+                        {{date}}
+                      </span>
+                    </div>
+                    <!-- /.timeline-label -->
+                    {% load pets_extras %}
+                    {% for event in events %}
+                    <!-- timeline item -->
+                    <div>
+                      <i class="fas fa-{{event.icon}} bg-primary"></i>
 
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> {{event.date.time}}</span>
+                      <div class="timeline-item">
+                        <span class="time" data-toggle="tooltip" data-placement="top" title="{{event.date}}"><i
+                            class="far fa-clock"></i> {{event.date | humanizetime}}</span>
 
-                          <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+                        <h3 class="timeline-header"><b>{{event.friendly_name}}</b></h3>
 
-                          <div class="timeline-body">
-                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                            quora plaxo ideeli hulu weebly balihoo...
-                          </div>
-                          <div class="timeline-footer">
-                            <a href="#" class="btn btn-primary btn-sm">Read more</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                          </div>
+                        <div class="timeline-body">
+                          <dl>
+                            {% for verbose_name, value in event.get_timeline_fields %}
+                            <dt>{{verbose_name}}</dt>
+                            <dd>{{value}}</dd>
+                            {% comment %} <dt>{% get_verbose_field_name event "description" %}</dt>
+                            <dd>{{event.description}}</dd>
+                            {% if event.notes %}
+                            <dt>{% get_verbose_field_name event "notes" %}</dt>
+                            <dd>{{event.notes}}</dd>
+                            {% endif %} {% endcomment %}
+                            {% endfor %}
+                          </dl>
                         </div>
-                      </div>
-                      <!-- END timeline item -->
-                      {% endfor %}
-                      {% endfor %}
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-success">
-                          3 Jan. 2014
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-camera bg-purple"></i>
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
-
-                          <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-
-                          <div class="timeline-body">
-                            <img src="https://placehold.it/150x100" alt="...">
-                            <img src="https://placehold.it/150x100" alt="...">
-                            <img src="https://placehold.it/150x100" alt="...">
-                            <img src="https://placehold.it/150x100" alt="...">
-                          </div>
+                        <div class="timeline-footer">
+                          <button type="button" class="btn btn-primary event-edit-modal-trigger"
+                            data-modal-content-url="{{event.editform_url}}">
+                            Details / Edit
+                          </button>
                         </div>
-                      </div>
-                      <!-- END timeline item -->
-                      <div>
-                        <i class="far fa-clock bg-gray"></i>
                       </div>
                     </div>
+                    <!-- END timeline item -->
+                    {% endfor %}
+                    {% endfor %}
+                    <!-- timeline time label -->
+                    <div class="time-label">
+                      <span class="bg-info">
+                        {{pet.date_of_birth}}
+                      </span>
+                    </div>
+                    <!-- /.timeline-label -->
+                    <!-- timeline item -->
+                    <div>
+                      <i class="fas fa-baby-carriage bg-pink"></i>
+
+                      <div class="timeline-item">
+                        <span class="time" data-toggle="tooltip" data-placement="top" title="{{pet.date_of_birth}}"><i
+                            class="far fa-clock"></i> {{pet.date_of_birth | humanizetime}}</span>
+
+                        <h3 class="timeline-header border-0">{{pet.name}} was born!</h3>
+                      </div>
+                    </div>
+                    <!-- END timeline item -->
+                    <div>
+                      <i class="far fa-clock bg-gray"></i>
+                    </div>
                   </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="update">
-                    {% load crispy_forms_tags %}
-                    {% crispy form %}
-                  </div>
-                  <!-- /.tab-pane -->
                 </div>
-                <!-- /.tab-content -->
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="update">
+                  {% load crispy_forms_tags %}
+                  {% crispy form %}
+                </div>
+                <!-- /.tab-pane -->
+              </div>
+              <!-- /.tab-content -->
+            </div><!-- /.card-body -->
           </div>
-          <!-- /.col -->
+          <!-- /.card -->
         </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
+    <div class="modal fade" id="modal-container"></div>
+    <!-- /.modal -->
+  </section>
+  <!-- /.content -->
+</div>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script>
+  $(document).ready(function () {
+    $('.event-edit-modal-trigger').click(function () {
 
-  <!-- jQuery -->
-  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="/static/assets/js/adminlte.min.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="/static/assets/js/demo.js"></script>
+      var modalContentUrl = $(this).data('modal-content-url');
+      console.log("content url: " + modalContentUrl)
+      // AJAX request
+      $.ajax({
+        url: modalContentUrl,
+        type: 'get',
+        success: function (response) {
+          // Add response in Modal body
+          $('#modal-container').html(response);
 
-{% endblock javascripts %}  
+          // Display Modal
+          $('#modal-container').modal('show');
+        }
+      });
+    });
+    $('#modal-container').on('hidden.bs.modal', function (e) {
+      $('#modal-container').html("");
+    })
+  });
+</script>
+{% endblock javascripts %}

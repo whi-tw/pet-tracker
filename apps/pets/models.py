@@ -1,15 +1,18 @@
 import os
 import random
+from typing import List
 from uuid import uuid4
 
 from datetime import datetime
 
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from polymorphic.models import PolymorphicModel
 
 
 class Pet(models.Model):
@@ -25,7 +28,7 @@ class Pet(models.Model):
         return os.path.join("default_pet_photos", f"{img_number}.jpg")
 
     picture = models.ImageField(
-        blank=True, upload_to=pet_photo_file_name, default=default_pet_photo()
+        blank=True, upload_to=pet_photo_file_name, default=default_pet_photo
     )
     picture_profile = ImageSpecField(
         source="picture",
@@ -70,17 +73,59 @@ class Pet(models.Model):
         return age
 
     def __str__(self) -> str:
-        return f"{self.name} - {self.species} {self.breed}`"
+        return f"{self.name} - {self.get_species_display()} {self.breed}"
 
 
-class PetEvent(models.Model):
+class PetEvent(PolymorphicModel):
+    friendly_name: str
+    editform_url: str
+    kind: str
+    icon: str
+    timeline_fields: List[str] = []
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
-    date = models.DateTimeField("Date")
+    date = models.DateTimeField(_("Date"))
+
+    @property
+    def editform_url(self):
+        return reverse("event_edit", kwargs={"kind": self.kind, "id": self.id})
+
+    def _get_fields(self, field_names=List[str]):
+        resp_fields = (
+            field for field in self._meta.fields if field.name in field_names
+        )
+        for field in resp_fields:
+            if not field.value_to_string(self):
+                continue
+            yield (field.verbose_name, field.value_to_string(self))
+
+    def get_timeline_fields(self):
+        return self._get_fields(self.timeline_fields)
 
 
 class VetAppointment(PetEvent):
-    pass
+    kind = "vetappointment"
+    location = models.CharField(_("Location"), blank=True, max_length=500)
+    description = models.TextField(_("Reason"), blank=True)
+    notes = models.TextField(_("Notes"), blank=True)
+    timeline_fields = ["description", "notes"]
+
+    @property
+    def friendly_name(self):
+        if timezone.now() > self.date:
+            return _("Vet visit")
+        return _("Vet appointment")
+
+    @property
+    def icon(self):
+        if timezone.now() > self.date:
+            return "calendar-check"
+        return "calendar"
 
 
 class HealthEvent(PetEvent):
-    pass
+    kind = "healthevent"
+    friendly_name = _("Health Event")
+
+    @property
+    def icon(self):
+        return "heart-pulse"
